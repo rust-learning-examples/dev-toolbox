@@ -1,0 +1,14 @@
+$primary-color: #1990EB;
+$border-color: #f2f2f2;
+
+$theme: (
+  // map_get($theme, page-bgColor)
+  page-bgColor: #f8f8f8,
+);
+
+$healthCode: (
+  // map_get($healthCode, greenColor)
+  greenColor: #4FBD5D,
+  yellowColor: #FFCB3E,
+  redColor: #E14040,
+)
