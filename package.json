@@ -1,5 +1,5 @@
 {
-  "name": "ts-vue3",
+  "name": "code-snippets",
   "private": true,
   "main": "index.js",
   "version": "0.0.0",
@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "build:analytics": "FOR_ANALYTICS=1 npm run build"
+    "build:analytics": "FOR_ANALYTICS=1 npm run build",
+    "tauri": "tauri"
   },
   "dependencies": {
+    "@tauri-apps/api": "^1.0.2",
     "@types/nprogress": "^0.2.0",
     "axios": "^0.27.2",
     "element-plus": "^2.2.8",
@@ -20,6 +22,7 @@
     "vue-router": "^4.1.2"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1.0.4",
     "@types/node": "^18.0.2",
     "@vitejs/plugin-legacy": "^1.8.2",
     "@vitejs/plugin-vue": "^2.3.3",

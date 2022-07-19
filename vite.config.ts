@@ -38,7 +38,7 @@ export default defineConfig(params => {
       // Tauri expects a fixed port, fail if that port is not available
       strictPort: true,
       host: '0.0.0.0',
-      port: 8899,
+      port: 5173,
       // strictPort: false,
       // https: false,
       // open: '/',
