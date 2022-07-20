@@ -1,7 +1,8 @@
+import type { RouteRecordRaw } from 'vue-router'
 import { computed } from 'vue'
 import NProgress from 'nprogress'
 
-export const useRoute = (route: object = {}): object => {
+export const useRoute = (route: RouteRecordRaw): any => {
   const { component, ...finalRoute } = route as any
   // meta
   finalRoute.meta = {
@@ -26,10 +27,10 @@ export const useRoute = (route: object = {}): object => {
   return finalRoute
 }
 
-export const useRoutes = (routes: [object]) => {
-  const iterateUseRoute = (route: any): any => {
+export const useRoutes = (routes: RouteRecordRaw[] = []): any => {
+  const iterateUseRoute = (route: RouteRecordRaw): RouteRecordRaw => {
     if (route.children?.length) {
-      route.children = route.children.map((childRoute: any) => iterateUseRoute(childRoute))
+      route.children = route.children.map((childRoute: RouteRecordRaw) => iterateUseRoute(childRoute))
     }
     return useRoute(route)
   }

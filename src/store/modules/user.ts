@@ -1,5 +1,17 @@
 import { defineStore } from 'pinia'
-import { User, AuthInfo, UserInfo } from './types'
+
+export interface AuthInfo {
+  token?: string;
+}
+
+export interface UserInfo {
+  name?: string;
+}
+
+export interface User {
+  authInfo: AuthInfo | undefined | null;
+  userInfo: UserInfo | undefined | null;
+}
 
 export const useUser = defineStore('user', {
   state: (): User => ({

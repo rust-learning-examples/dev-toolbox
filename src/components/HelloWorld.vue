@@ -1,4 +1,5 @@
 <script setup lang="tsx">
+import { ref } from 'vue'
 import { useUser } from '@/store'
 import { useDialog } from '@/utils/hooks/useDialog'
 
@@ -19,6 +20,8 @@ const onTestDialog = () => {
   })
 }
 
+const input = ref('');
+
 </script>
 
 <template>
@@ -27,6 +30,7 @@ const onTestDialog = () => {
     <el-button @click="onTestSetAuthInfo">testSetAuthInfo</el-button>
     <el-button @click="onTestDialog">testDialog</el-button>
   </el-space>
+  <el-input v-model="input"></el-input>
 </template>
 
 <style scoped>

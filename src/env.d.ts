@@ -7,16 +7,24 @@ declare module '*.vue' {
   export default component
 }
 
-import {App as OriginalApp} from 'vue'
+import type {App as OriginalApp} from 'vue'
 declare module 'vue' {
   export interface App extends OriginalApp {
-    // custom properties
+    // custom methods
     render: (vnode: VNode | null, container: Element) => void;
   }
 }
 
+import type {Router as OriginalRouter, RouteRecord} from 'axios'
+declare module 'vue-router' {
+  export interface Router extends OriginalRouter {
+    // custom methods
+    getRoute: (routeName: string) => RouteRecord;
+  }
+}
 
-import {AxiosRequestConfig as OriginalAxiosRequestConfig} from 'axios'
+
+import type {AxiosRequestConfig as OriginalAxiosRequestConfig} from 'axios'
 declare module 'axios' {
   export interface AxiosRequestConfig extends OriginalAxiosRequestConfig {
     // custom properties

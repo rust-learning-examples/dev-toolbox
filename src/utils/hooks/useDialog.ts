@@ -59,14 +59,14 @@ const DialogComponent = defineComponent({
 //  }
 // })
 
-export const useDialog = (defaultOptions?: object): object => {
+export const useDialog = (defaultOptions?: any): any => {
   const configProvider = inject('elConfigProvider', null)
   const instance = getCurrentInstance() as ComponentInternalInstance
   console.assert(!!instance, 'getCurrentInstance无法获取到实例，请检查')
   const app = instance.appContext.app as App
 
   return {
-    create (options: object): object {
+    create (options: any): any {
       const div = document.createElement('div')
       div.setAttribute('class', 'use-dialog-container')
       document.body.appendChild(div)

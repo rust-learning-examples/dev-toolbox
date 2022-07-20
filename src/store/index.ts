@@ -3,10 +3,11 @@ import { createPinia } from 'pinia'
 // https://github.com/prazdevs/pinia-plugin-persistedstate
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
+import { useApp } from './modules/app'
 import { useUser } from './modules/user'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
-export { useUser }
+export { useApp, useUser, }
 export default pinia

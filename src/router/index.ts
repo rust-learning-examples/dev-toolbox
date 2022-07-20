@@ -1,10 +1,16 @@
 // https://router.vuejs.org/zh/
-import { createRouter, createWebHashHistory, RouteRecord } from 'vue-router'
+import type { RouteRecord } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useRoutes } from '@/utils/hooks/useRoutes'
 import auth from './auth'
 
 const routes = useRoutes([
-  auth
+  { ...auth },
+  {
+    path: '/', redirect: '/home', component: () => import('@/views/index.vue'), children: [
+      { path: '/home', name: 'home', meta: { title: '首页' }, component: () => import('@/views/home/index.vue') },
+    ]
+  },
 ])
 
 const router = createRouter({
@@ -15,13 +21,13 @@ const router = createRouter({
 const proxyRouter = new Proxy(router, {
   get(object, key, ...args) {
     if (key === 'getRoute') {
-      return function(routeName: string): any {
+      return function(routeName: string): RouteRecord | undefined {
         const routes = object.getRoutes()
         return routes.find(route => route.name === routeName)
       }
     } else if (key === 'getParentRoute') {
-      return function(route: any): any {
-        const parentRouteName = route.name?.split('/').slice(0, -1).join('/')
+      return function(route: RouteRecord): RouteRecord | undefined {
+        const parentRouteName = (route.name as string)?.split('/').slice(0, -1).join('/')
         return parentRouteName ? (proxyRouter as any)['getRoute'](parentRouteName) : null
       }
     } else {
@@ -56,10 +62,11 @@ proxyRouter.beforeResolve(async to => {
 
 proxyRouter.afterEach(async (to, from) => {
   if (to.meta?.fullTitle) {
-    document.title = to.meta?.fullTitle as string
+    document.title = to.meta.fullTitle as string
+  } else if (to.meta?.title) {
+    document.title = `dev toolbox - ${to.meta.title}`
   } else {
-    const title = to.meta?.title
-    document.title = `ts-vue - ${title}`
+    document.title = `dev toolbox`
   }
 })
 
