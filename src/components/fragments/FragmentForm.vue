@@ -22,7 +22,7 @@ export default defineComponent({
           }
         }
         // onSubmit
-        attrs['onSubmit'] = (...args: [any]) => {
+        attrs['onSubmit'] = (...args: any[]) => {
           state.submitLoading.load(async () => {
             await state.formRef?.validate().then(async () => {
               //await new Promise(resolve => {
@@ -60,7 +60,8 @@ export default defineComponent({
         return {
           dialogState,
           formRef: state.formRef,
-          formAttrs: state.formAttrs,
+          setFormRef: (el: any) => state.formRef = el,
+          ...state.formAttrs,
           submitLoading: state.submitLoading,
         }
       })

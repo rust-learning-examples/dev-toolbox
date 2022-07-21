@@ -8,11 +8,18 @@
   },
   "package": {
     "productName": "dev-toolbox",
-    "version": "0.1.0"
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "all": true,
+      "fs": {
+        "scope": ["$APP", "$APP/*"]
+      }
+    },
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
     },
     "bundle": {
       "active": true,
@@ -28,7 +35,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.zezeping.dev-toolbox",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -55,10 +62,13 @@
     "windows": [
       {
         "fullscreen": false,
+        "alwaysOnTop": true,
         "height": 600,
+        "minHeight": 450,
         "resizable": true,
-        "title": "Code Snippets",
-        "width": 800
+        "title": "Dev Toolbox",
+        "width": 800,
+        "minWidth": 600
       }
     ]
   }

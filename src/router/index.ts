@@ -9,6 +9,7 @@ const routes = useRoutes([
   {
     path: '/', redirect: '/home', component: () => import('@/views/index.vue'), children: [
       { path: '/home', name: 'home', meta: { title: '首页' }, component: () => import('@/views/home/index.vue') },
+      { path: '/codeSpippets', name: 'codeSpippets', meta: { title: '代码段' }, component: () => import('@/views/codeSpippets/index.vue') },
     ]
   },
 ])
@@ -64,9 +65,9 @@ proxyRouter.afterEach(async (to, from) => {
   if (to.meta?.fullTitle) {
     document.title = to.meta.fullTitle as string
   } else if (to.meta?.title) {
-    document.title = `dev toolbox - ${to.meta.title}`
+    document.title = `dev-toolbox ${to.meta.title}`
   } else {
-    document.title = `dev toolbox`
+    document.title = `dev-toolbox`
   }
 })
 

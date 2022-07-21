@@ -22,14 +22,26 @@ class Cache {
     if (!this.storage.hasOwnProperty(cacheKey) || options.forceReload || this.storage[cacheKey].expiresAtSecs < now) {
       this.setValue(cacheKey, dataLoader, options)
     }
-    return computed(() => this.storage[cacheKey].value)
+    return computed(() => ({
+      value: this.storage[cacheKey].value,
+      reset: () => {
+        this.setValue(cacheKey, dataLoader, options)
+      }
+    }))
   }
 }
 
 const cache = new Cache()
 
-export function useCache(cacheKey: string, dataLoader: () => any, options: any) {
+export function useCache(cacheKey: string, dataLoader: () => any, options?: any) {
   options = { forceReload: false, defaultValue: null, expiresInSecs: 3600, ...options }
   console.assert(typeof dataLoader === 'function', 'dataLoader must be a function')
   return cache.getValue(cacheKey, dataLoader, options)
 }
+
+export const CACHE_ENUMS = Object.freeze({
+  DB_LANGUAGES: 'DB_LANGUAGES',
+})
+export const useDbLanguages = () => useCache(CACHE_ENUMS.DB_LANGUAGES, async () => {
+
+})

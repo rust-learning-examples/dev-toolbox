@@ -75,6 +75,7 @@ export const useDialog = (defaultOptions?: any): any => {
       const dialogVNode = createVNode(DialogComponent, {
         options: {
           //destroyOnClose: true,
+          closeOnClickModal: false,
           ...defaultOptions,
           ...options,
           modelValue: dialogVisible,

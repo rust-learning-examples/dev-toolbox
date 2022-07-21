@@ -32,14 +32,13 @@ export default defineComponent({
     },
   },
   emits: ['update:query', 'update:data', 'update:pagination'],
-  expose: ['refreshData', 'fetchData'],
+  expose: ['refreshData', 'fetchData', 'call'],
   setup (props, ctx) {
     const router = useRouter()
     const route = useRoute()
 
     const state: any = reactive({
       fetchLoading: useLoading(),
-      tableRef: null,
       query: ctx.attrs.query || {},
       currentQuery: computed({
         get: () => ctx.attrs.query || state.query,
@@ -125,15 +124,37 @@ export default defineComponent({
         }
       }
     })
+    state.getRouteQuery().then((q: any) => {
+      state.currentQuery = {...state.curQuery, ...q}
+      const enableFirstAutoFetch = typeof props.enableAutoFetchFirst === 'function' ? props.enableAutoFetchFirst({...state.currentQuery}) : props.enableAutoFetchFirst
+      if (enableFirstAutoFetch) {
+        state.refreshData()
+      }
+    })
     return {
       ...toRefs(state),
+      async call(method, ...args) {
+        if (state[method]) {
+          await state[method](...args)
+        } else if (state.formRef && state.formRef[method]) {
+          await state.formRef[method](...args)
+        } else {
+          console.error(`Not found method: ${method}`)
+        }
+      },
       slotData: computed(() => {
         return {
-          tableRef: state.tableRef,
+          fetchLoading: state.fetchLoading,
+          fetchData: state.fetchData,
           autoFetchFirst: state.autoFetchFirst,
           query: state.currentQuery,
           data: state.currentData,
-          pagination: state.currentPagination,
+          pagination: {
+            ...state.currentPagination,
+            async onChange(pageNo: number, pageSize: number) {
+              await state.fetchData({pageNo, pageSize})
+            }
+          },
           columns: state.columns,
         }
       })

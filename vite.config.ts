@@ -5,9 +5,13 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 // polyfill https://github.com/vitejs/vite/tree/main/packages/plugin-legacy
 import legacy from '@vitejs/plugin-legacy'
 
-import AutoImport from 'unplugin-auto-import/vite'
+// import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+// icon
+import Icons from 'unplugin-icons/vite'
+import { FileSystemIconLoader } from 'unplugin-icons/loaders'
+import IconsResolver from 'unplugin-icons/resolver'
 
 import visualizer from 'rollup-plugin-visualizer'
 
@@ -103,13 +107,44 @@ function getPlugins(): any[] {
       targets: ['defaults'/*, 'not IE 11'*/, 'ie >= 11'],
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     }),
-    AutoImport({
-      dts: 'types/auto-imports.d.ts',
-      resolvers: [ElementPlusResolver()],
-    }),
+    // AutoImport({
+    //   dts: 'types/auto-imports.d.ts',
+    //   // Auto import functions from Vue, e.g. ref, reactive, toRef...
+    //   // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
+    //   imports: ['vue'],
+
+    //   // Auto import functions from Element Plus, e.g. ElMessage, ElMessageBox... (with style)
+    //   // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
+    //   resolvers: [
+    //     ElementPlusResolver(),
+    //     // Auto import icon components
+    //     // 自动导入图标组件
+    //     IconsResolver({prefix: 'Icon', }),
+    //   ],
+    // }),
     Components({
       dts: 'types/components.d.ts',
-      resolvers: [ElementPlusResolver({ importStyle: false })],
+      resolvers: [
+        ElementPlusResolver({ importStyle: true }),
+        IconsResolver({
+          alias: { svg2: 'svg-inline', },
+          // ep -> elment-plus icons eg: <i-ep-refresh />
+          customCollections: ['ep', 'svg', 'svg-inline'],
+        }),
+      ],
+    }),
+    Icons({
+      compiler: 'vue3',
+      // autoInstall: true,
+      customCollections: {
+        // <i-svg-help style="font-size: 50px; fill: red;" />
+        svg: FileSystemIconLoader('src/assets/images/svg-icons'),
+        'svg-inline': {
+          // <i-svg-inline-foo />
+          // <i-svg2-foo />
+          foo: `<svg viewBox="0 0 100 100"><rect x="0" y="0" width="100%" height="100%"/><circle cx="50%" cy="50%" r="50" fill="white"/></svg>`,
+        },
+      },
     }),
   ]
 

@@ -1,8 +1,8 @@
 <template>
    <el-menu :default-active="defaultActiveMenu">
-    <template v-for="(menu, idx) in menus" :key="menu.name">
-      <el-menu-item :index="String(menu.name)">
-        {{ menu.meta.title || menu.name }}
+    <template v-for="(menuItem, idx) in menus" :key="menuItem.name">
+      <el-menu-item :index="String(menuItem.name)" @click="onMenuItemClick(menuItem)">
+        {{ menuItem.meta.title || menuItem.name }}
       </el-menu-item>
     </template>
    </el-menu>
@@ -22,8 +22,12 @@ export default defineComponent({
       menus: computed(() => {
         return [
           router.getRoute('home'),
+          router.getRoute('codeSpippets'),
         ]
-      })
+      }),
+      onMenuItemClick(menuItem: any) {
+        router.push({name: menuItem.name})
+      }
     })
     return { ...toRefs(state) }
   },

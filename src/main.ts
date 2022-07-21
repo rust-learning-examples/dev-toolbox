@@ -8,31 +8,40 @@ import './assets/stylesheets/application.scss'
 import 'element-plus/dist/index.css'
 import http from './utils/http'
 
-const app = createApp(App)
-app.use(store).use(router).mount('#app')
+function initVueApp() {
+  const app = createApp(App)
+  app.use(store).use(router).mount('#app')
 
-// 配置到全局变量中 const gv = getCurrentInstance().appContext.config.globalProperties
-app.config.globalProperties.$http = http
+  // 配置到全局变量中 const gv = getCurrentInstance().appContext.config.globalProperties
+  app.config.globalProperties.$http = http
 
-app.render = (vnode, rootContainer): void => {
-  if (vnode && !vnode.appContext) vnode.appContext = app._context
-  render(vnode, rootContainer)
+  app.render = (vnode, rootContainer): void => {
+    if (vnode && !vnode.appContext) vnode.appContext = app._context
+    render(vnode, rootContainer)
+  }
 }
 
-import * as tauriEvent from '@tauri-apps/api/event'
-import * as globalShortcut from '@tauri-apps/api/globalShortcut'
-console.log(111, globalShortcut)
-// import { useApp } from './store'
+import { appWindow } from '@tauri-apps/api/window'
+import * as notification from '@tauri-apps/api/notification'
+import { useDatabaseAsync } from '@/utils/hooks/useDatabase'
+async function initTauri() {
+  // https://tauri.studio/docs/api/js/modules/event#eventname
+  appWindow.listen('tauri://close-requested', () => {
+    appWindow.hide();
+  })
 
-// async function tauriRegister() {
-//   await globalShortcut.unregisterAll()
-//   // await globalShortcut.registerAll(['A', 'B'], (...args) => {
-//   //   console.log(`Shortcut 1 ${args} triggered`);
-//   // });
+  if (!await notification.isPermissionGranted()) {
+    notification.requestPermission().then((response) => {
+      if (response === "granted") {
+        console.log("OK")
+      } else {
+        console.log("Permission is " + response);
+      }
+    })
+  }
 
-//   window.addEventListener('keypress', event => {
-//     console.log(111, event)
-//   })
-// }
-
-// tauriRegister()
+  await useDatabaseAsync()
+}
+initTauri().then(() => {
+  initVueApp()
+})
