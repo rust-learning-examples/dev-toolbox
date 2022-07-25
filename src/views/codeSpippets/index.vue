@@ -1,4 +1,9 @@
 <template>
+  <el-descriptions v-if="dbState.lastCodeSnippetUserInput" class="mb-4" border>
+    <el-descriptions-item label-class-name="custom-label" label="最后输入的键:">
+      <el-tag>~{{dbState.lastCodeSnippetUserInput}}?</el-tag>
+    </el-descriptions-item>
+  </el-descriptions>
   <el-tabs class="page flex flex-col" type="border-card" v-model="activeTab">
     <el-tab-pane name="CodeSnippets" label="代码段">
       <CodeSnippets></CodeSnippets>
@@ -10,9 +15,10 @@
 </template>
 
 <script lang='tsx'>
-import { reactive, toRefs, defineComponent } from 'vue'
+import { reactive, toRefs, defineComponent, computed } from 'vue'
 import CodeSnippets from './CodeSnippets/index.vue'
 import Languages from './Languages/index.vue'
+import { useDatabase } from '@/utils/hooks/useDatabase'
 
 export default defineComponent({
   components: {
@@ -20,8 +26,11 @@ export default defineComponent({
     Languages,
   },
   setup (props, ctx) {
+    const database = useDatabase()
+
     const state = reactive({
-      activeTab: 'CodeSnippets'
+      activeTab: 'CodeSnippets',
+      dbState: computed(() => database!.state),
     })
     return { ...toRefs(state) }
   },
@@ -29,9 +38,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-// .el-tabs {
-//   ::v-deep(.el-tabs__content) {
-//     flex: 1;
-//   }
-// }
+.el-descriptions {
+  overflow: hidden;
+  ::v-deep(.custom-label) {
+    min-width: 100px;
+    width: 100px;
+  }
+}
 </style>

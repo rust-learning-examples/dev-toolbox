@@ -4,7 +4,7 @@
       <el-form :ref="setFormRef" :model="model" label-width="50px">
         <el-form-item label="语言" prop="language_id" :rules="[{required: true, message: '必填', trigger: ['change', 'blur']}]">
           <el-select v-model="model.language_id" placeholder="语言">
-            <template v-for="(option, idx) in tables.languages" :key="idx">
+            <template v-for="(option, idx) in dbState.languages" :key="idx">
               <el-option :label="option.name" :value="option.id"></el-option>
             </template>
           </el-select>
@@ -44,7 +44,7 @@ export default defineComponent({
   setup (props, ctx) {
     const database = useDatabase()
     const state: any = reactive({
-      tables: computed(() => database!.tables),
+      dbState: computed(() => database!.state),
       formConfig: {
         model: {...props.record},
         async onSubmit() {

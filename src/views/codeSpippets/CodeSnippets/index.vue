@@ -7,7 +7,7 @@
             <el-form inline :model="query">
               <el-form-item label="语言">
                 <el-select v-model="query.language_id" clearable placeholder="语言">
-                  <template v-for="(option, idx) in tables.languages" :key="idx">
+                  <template v-for="(option, idx) in dbState.languages" :key="idx">
                     <el-option :label="option.name" :value="option.id"></el-option>
                   </template>
                 </el-select>
@@ -127,8 +127,8 @@ export default defineComponent({
     const state = reactive({
       activeCollapses: [],
       // recordCollapesed: computed(() => (record: any) => (state.activeCollapses as any[]).indexOf(record.code) !== -1),
-      tables: computed(() => database!.tables),
-      languageName: computed(() => (languageId: number) => state.tables.languages.find(item => item.id === languageId)?.name),
+      dbState: computed(() => database!.state),
+      languageName: computed(() => (languageId: number) => state.dbState.languages.find(item => item.id === languageId)?.name),
       tableRef: null,
       pagination: {pageNo: 1, pageSize: 100, totalCount: 0},
       tableConfig: {

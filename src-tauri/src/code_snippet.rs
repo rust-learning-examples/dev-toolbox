@@ -56,11 +56,19 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
           return RegexWord::ShiftText("[".to_string())
         } else if regex::Regex::new(r"^RightBracket$").unwrap().is_match(&key) {
           return RegexWord::ShiftText("]".to_string())
+        } else if regex::Regex::new(r"^BackSlash$").unwrap().is_match(&key) {
+          return RegexWord::ShiftText("\\".to_string())
         } else if regex::Regex::new(r"^Slash$").unwrap().is_match(&key) {
           return RegexWord::ShiftText("/".to_string())
         } else if regex::Regex::new(r"^Semicolon$").unwrap().is_match(&key) {
           return RegexWord::ShiftText(";".to_string())
-        } else if regex::Regex::new(r"^Grave$").unwrap().is_match(&key) {
+        } else if regex::Regex::new(r"^Apostrophe$").unwrap().is_match(&key) {
+          return RegexWord::ShiftText("'".to_string())
+        } else if regex::Regex::new(r"^Comma$").unwrap().is_match(&key) {
+          return RegexWord::ShiftText(",".to_string())
+        } else if regex::Regex::new(r"^Dot$").unwrap().is_match(&key) {
+          return RegexWord::ShiftText(".".to_string())
+        }  else if regex::Regex::new(r"^Grave$").unwrap().is_match(&key) {
           return RegexWord::ShiftText("·".to_string())
         } else if regex::Regex::new(r"^Tab$").unwrap().is_match(&key) {
           return RegexWord::Tab
@@ -120,7 +128,11 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
                 "=" => (*input_text).push_str("+"),
                 "[" => (*input_text).push_str("{"),
                 "]" => (*input_text).push_str("}"),
+                "\\" => (*input_text).push_str("|"),
                 ";" => (*input_text).push_str(":"),
+                "'" => (*input_text).push_str("\""),
+                "," => (*input_text).push_str("<"),
+                "." => (*input_text).push_str(">"),
                 // "/" => (*input_text).push_str("?"), // end
                 _ => ()
               }

@@ -8,20 +8,20 @@ import { CodeSnippet } from './CodeSnippet'
 
 class DatabaseManager {
   db: SQLite;
-  tables: UnwrapNestedRefs<{languages: Language[], codeSnippets: CodeSnippet[]}>;
+  state: UnwrapNestedRefs<{languages: Language[], lastCodeSnippetUserInput: string}>;
 
   constructor(db: SQLite) {
     this.db = db
-    this.tables = reactive({
+    this.state = reactive({
       languages: [],
-      codeSnippets: []
+      lastCodeSnippetUserInput: ''
     })
     this.fetchAllLanguages()
   }
 
   async fetchAllLanguages() {
     const items = await this.db.select<Array<any>>(`select * from languages`)
-    this.tables.languages = items.map((item: any) => new Language(item))
+    this.state.languages = items.map((item: any) => new Language(item))
   }
 }
 
@@ -52,7 +52,8 @@ async function initGlobalManager() {
 
   const manager = new DatabaseManager(db)
   appWindow.listen('CODE_SNIPPET_INPUT_TEXT', async event => {
-    let inputText = event.payload as string;;
+    let inputText = event.payload as string;
+    manager.state.lastCodeSnippetUserInput = inputText;
     if (/^@/.test(inputText)) {
       inputText = inputText.substring(1)
       const [languageName, ...others] = inputText.split(' ')
