@@ -1,15 +1,14 @@
- use device_query::{DeviceEvents, DeviceState, Keycode};
- use once_cell::sync::Lazy;
- use std::sync::{Mutex, Arc};
+use device_query::{DeviceEvents, DeviceState, Keycode};
+use once_cell::sync::Lazy;
+use std::sync::{Mutex, Arc};
 
+pub struct KeyboardEventsHandler {
+allow_record: Arc<Mutex<bool>>,
+is_shift: Arc<Mutex<bool>>,
+input_text: Arc<Mutex<String>>,
+}
 
- pub struct KeyboardEventsHandler {
-  allow_record: Arc<Mutex<bool>>,
-  is_shift: Arc<Mutex<bool>>,
-  input_text: Arc<Mutex<String>>,
- }
-
- impl Default for KeyboardEventsHandler {
+impl Default for KeyboardEventsHandler {
   fn default() -> Self {
     Self {
       allow_record: Arc::new(Mutex::new(false)),
@@ -19,7 +18,7 @@
   }
  }
 
- static KEYBOARD_EVENTS_HANDLER: Lazy<KeyboardEventsHandler> = Lazy::new(|| {
+static KEYBOARD_EVENTS_HANDLER: Lazy<KeyboardEventsHandler> = Lazy::new(|| {
   KeyboardEventsHandler::default()
 });
 

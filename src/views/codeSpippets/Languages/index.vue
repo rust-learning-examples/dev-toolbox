@@ -69,7 +69,7 @@ export default defineComponent({
     const dialog = useDialog()
 
     const state = reactive({
-      tables: computed(() => database!.tables),
+      databaseState: computed(() => database!.state),
       tableRef: null,
       tableConfig: {
         async fetchData(query: any) {

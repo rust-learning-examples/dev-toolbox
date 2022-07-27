@@ -51,6 +51,10 @@ async function initGlobalManager() {
   )
 
   const manager = new DatabaseManager(db)
+
+  /**
+   * code snippets
+   */
   appWindow.listen('CODE_SNIPPET_INPUT_TEXT', async event => {
     let inputText = event.payload as string;
     manager.state.lastCodeSnippetUserInput = inputText;
@@ -66,7 +70,7 @@ async function initGlobalManager() {
           if (codeSnippets.length) {
             const item = codeSnippets[0] as any;
             await clipboard.writeText(item.content) // copy
-            await tauri.invoke('code_snippet_handle', {
+            await tauri.invoke('code_snippet_handler', {
               inputText: event.payload,
               replaceContent: item.content,
             })

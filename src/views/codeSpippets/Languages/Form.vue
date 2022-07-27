@@ -34,7 +34,7 @@ export default defineComponent({
   setup (props, ctx) {
     const database = useDatabase()
     const state: any = reactive({
-      tables: computed(() => database!.tables),
+      databaseState: computed(() => database!.state),
       formConfig: {
         model: {...props.record},
         async onSubmit() {

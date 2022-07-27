@@ -23,6 +23,7 @@ export default defineComponent({
         return [
           router.getRoute('home'),
           router.getRoute('codeSpippets'),
+          router.getRoute('httpProxy'),
         ]
       }),
       onMenuItemClick(menuItem: any) {

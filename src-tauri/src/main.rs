@@ -5,11 +5,28 @@
 use tauri::{Manager, UserAttentionType};
 use app::menu;
 use app::tray::{self, SystemTrayEvent};
-use app::{code_snippet};
+use app::{code_snippet, http};
 
 #[tauri::command]
-fn code_snippet_handle(input_text: String, replace_content: String) -> Result<(), &'static str> {
+fn code_snippet_handler(input_text: String, replace_content: String) -> Result<(), &'static str> {
   code_snippet::handle_user_input(input_text, replace_content)
+}
+
+#[tauri::command]
+async fn start_http_server_handler(port: u16) -> Result<(), &'static str> {
+  println!("Starting http server..{}.", port);
+  {
+    let mut config = http::CONFIG.lock().unwrap();
+    (*config).port = port;
+  }
+  match http::listen(port).await {
+    Ok(()) => {
+      Ok(())
+    },
+    Err(e) => {
+      Err(e)
+    }
+  }
 }
 
 fn main() {
@@ -68,7 +85,7 @@ fn main() {
 
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![code_snippet_handle])
+    .invoke_handler(tauri::generate_handler![code_snippet_handler, start_http_server_handler])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
