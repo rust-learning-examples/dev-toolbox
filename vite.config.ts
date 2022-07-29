@@ -101,7 +101,15 @@ export default defineConfig(params => {
 
 function getPlugins(): any[] {
   const plugins = [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: tag => {
+            return tag === 'hls-player'
+          }
+        }
+      }
+    }),
     vueJsx(),
     legacy({
       targets: ['defaults'/*, 'not IE 11'*/, 'ie >= 11'],

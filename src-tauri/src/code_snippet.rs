@@ -3,23 +3,23 @@ use once_cell::sync::Lazy;
 use std::sync::{Mutex, Arc};
 
 pub struct KeyboardEventsHandler {
-allow_record: Arc<Mutex<bool>>,
-is_shift: Arc<Mutex<bool>>,
-input_text: Arc<Mutex<String>>,
+allow_record: bool,
+is_shift: bool,
+input_text: String,
 }
 
 impl Default for KeyboardEventsHandler {
   fn default() -> Self {
     Self {
-      allow_record: Arc::new(Mutex::new(false)),
-      is_shift: Arc::new(Mutex::new(false)),
-      input_text: Arc::new(Mutex::new("".into())),
+      allow_record: false,
+      is_shift: false,
+      input_text: "".into(),
     }
   }
  }
 
-static KEYBOARD_EVENTS_HANDLER: Lazy<KeyboardEventsHandler> = Lazy::new(|| {
-  KeyboardEventsHandler::default()
+static KEYBOARD_EVENTS_HANDLER: Lazy<Arc<Mutex<KeyboardEventsHandler>>> = Lazy::new(|| {
+  Arc::new(Mutex::new(KeyboardEventsHandler::default()))
 });
 
 enum RegexWord {
@@ -36,8 +36,8 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
     let key = key.to_string();
     // println!("in-- key: {}", key);
     if regex::Regex::new(r"Shift$").unwrap().is_match(&key) {
-      let mut is_shift = KEYBOARD_EVENTS_HANDLER.is_shift.lock().unwrap();
-      *is_shift = true;
+      let mut global_keyboard_events_handler = KEYBOARD_EVENTS_HANDLER.lock().unwrap();
+      global_keyboard_events_handler.is_shift = true;
     } else {
       let get_record_word = || {
         let key = regex::Regex::new(r"^Key").unwrap().replace(&key, "").to_string();
@@ -78,24 +78,22 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
       };
 
       let record_word = get_record_word();
-      let is_shift = KEYBOARD_EVENTS_HANDLER.is_shift.lock().unwrap();
-      let mut allow_record = KEYBOARD_EVENTS_HANDLER.allow_record.lock().unwrap();
-      let mut input_text = KEYBOARD_EVENTS_HANDLER.input_text.lock().unwrap();
 
       match &record_word {
         RegexWord::ShiftText(key) => {
-          if *is_shift {
+          let mut global_keyboard_events_handler = KEYBOARD_EVENTS_HANDLER.lock().unwrap();
+          if global_keyboard_events_handler.is_shift {
             match key.as_str() {
               "·" => {
-                *input_text = "".to_string();
-                *allow_record = true;
+                global_keyboard_events_handler.input_text = "".to_string();
+                global_keyboard_events_handler.allow_record = true;
               },
               "/" => {
-                if *allow_record && input_text.len() > 0 {
-                  executor((*input_text).clone());
+                if global_keyboard_events_handler.allow_record && global_keyboard_events_handler.input_text.len() > 0 {
+                  executor(global_keyboard_events_handler.input_text.clone());
                 }
-                *input_text = "".to_string();
-                *allow_record = false;
+                global_keyboard_events_handler.input_text = "".to_string();
+                global_keyboard_events_handler.allow_record = false;
               },
               _ => ()
             }
@@ -104,44 +102,45 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
         _ => ()
       }
 
-      if *allow_record {
+      let mut global_keyboard_events_handler = KEYBOARD_EVENTS_HANDLER.lock().unwrap();
+      if global_keyboard_events_handler.allow_record {
         match &record_word {
           RegexWord::Text(key) => {
-            (*input_text).push_str(&key);
+            global_keyboard_events_handler.input_text.push_str(&key);
           },
           RegexWord::ShiftText(key) => {
-            if *is_shift {
+            if global_keyboard_events_handler.is_shift {
               match key.as_str() {
-                "1" => (*input_text).push_str("!"),
-                "2" => (*input_text).push_str("@"),
-                "3" => (*input_text).push_str("#"),
-                "4" => (*input_text).push_str("$"),
-                "5" => (*input_text).push_str("%"),
-                "6" => (*input_text).push_str("^"),
-                "7" => (*input_text).push_str("&"),
-                "8" => (*input_text).push_str("*"),
-                "9" => (*input_text).push_str("("),
-                "0" => (*input_text).push_str(")"),
+                "1" => global_keyboard_events_handler.input_text.push_str("!"),
+                "2" => global_keyboard_events_handler.input_text.push_str("@"),
+                "3" => global_keyboard_events_handler.input_text.push_str("#"),
+                "4" => global_keyboard_events_handler.input_text.push_str("$"),
+                "5" => global_keyboard_events_handler.input_text.push_str("%"),
+                "6" => global_keyboard_events_handler.input_text.push_str("^"),
+                "7" => global_keyboard_events_handler.input_text.push_str("&"),
+                "8" => global_keyboard_events_handler.input_text.push_str("*"),
+                "9" => global_keyboard_events_handler.input_text.push_str("("),
+                "0" => global_keyboard_events_handler.input_text.push_str(")"),
                 // "·" => (*input_text).push_str("~"), // start
-                "-" => (*input_text).push_str("_"),
-                "=" => (*input_text).push_str("+"),
-                "[" => (*input_text).push_str("{"),
-                "]" => (*input_text).push_str("}"),
-                "\\" => (*input_text).push_str("|"),
-                ";" => (*input_text).push_str(":"),
-                "'" => (*input_text).push_str("\""),
-                "," => (*input_text).push_str("<"),
-                "." => (*input_text).push_str(">"),
+                "-" => global_keyboard_events_handler.input_text.push_str("_"),
+                "=" => global_keyboard_events_handler.input_text.push_str("+"),
+                "[" => global_keyboard_events_handler.input_text.push_str("{"),
+                "]" => global_keyboard_events_handler.input_text.push_str("}"),
+                "\\" => global_keyboard_events_handler.input_text.push_str("|"),
+                ";" => global_keyboard_events_handler.input_text.push_str(":"),
+                "'" => global_keyboard_events_handler.input_text.push_str("\""),
+                "," => global_keyboard_events_handler.input_text.push_str("<"),
+                "." => global_keyboard_events_handler.input_text.push_str(">"),
                 // "/" => (*input_text).push_str("?"), // end
                 _ => ()
               }
             } else {
-              (*input_text).push_str(&key);
+              global_keyboard_events_handler.input_text.push_str(&key);
             }
           },
           RegexWord::Tab => {},
           RegexWord::Delete => {
-            (*input_text).pop();
+            global_keyboard_events_handler.input_text.pop();
           },
           _ => {}
         }
@@ -155,8 +154,8 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
     let key = key.to_string();
     // println!("out-- key: {}", key);
     if regex::Regex::new(r"Shift$").unwrap().is_match(&key) {
-      let mut is_shift = KEYBOARD_EVENTS_HANDLER.is_shift.lock().unwrap();
-      *is_shift = false;
+      let mut global_keyboard_events_handler = KEYBOARD_EVENTS_HANDLER.lock().unwrap();
+      global_keyboard_events_handler.is_shift = false;
     }
   });
   loop {}

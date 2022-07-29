@@ -2,7 +2,7 @@
   "name": "dev-toolbox",
   "private": true,
   "main": "index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -17,6 +17,7 @@
     "ace-builds": "^1.8.1",
     "axios": "^0.27.2",
     "element-plus": "^2.2.8",
+    "hls-player.js": "^0.0.2",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.14",
     "pinia-plugin-persistedstate": "^1.6.1",

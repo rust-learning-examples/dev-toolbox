@@ -24,6 +24,7 @@ export default defineComponent({
           router.getRoute('home'),
           router.getRoute('codeSpippets'),
           router.getRoute('httpProxy'),
+          router.getRoute('hlsPlayer'),
         ]
       }),
       onMenuItemClick(menuItem: any) {

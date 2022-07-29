@@ -15,10 +15,10 @@ fn code_snippet_handler(input_text: String, replace_content: String) -> Result<(
 #[tauri::command]
 async fn start_http_server_handler(port: u16) -> Result<(), &'static str> {
   println!("Starting http server..{}.", port);
-  {
-    let mut config = http::CONFIG.lock().unwrap();
-    (*config).port = port;
-  }
+  // {
+  //   let mut config = http::CONFIG.lock().unwrap();
+  //   (*config).port = port;
+  // }
   match http::listen(port).await {
     Ok(()) => {
       Ok(())
