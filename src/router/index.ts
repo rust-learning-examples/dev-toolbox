@@ -14,6 +14,7 @@ const routes = useRoutes([
       { path: '/hlsPlayer', name: 'hlsPlayer', meta: { title: 'hls播放器' }, component: () => import('@/views/hlsPlayer/index.vue') },
     ]
   },
+  { path: '/clipboardHistories', name: 'clipboardHistories', meta: { title: '剪切板历史' }, component: () => import('@/views/clipboardHistories/index.vue') },
 ])
 
 const router = createRouter({

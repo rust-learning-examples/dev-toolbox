@@ -130,7 +130,7 @@ export default defineComponent({
       dbState: computed(() => database!.state),
       languageName: computed(() => (languageId: number) => state.dbState.languages.find(item => item.id === languageId)?.name),
       tableRef: null,
-      pagination: {pageNo: 1, pageSize: 100, totalCount: 0},
+      pagination: {pageNo: 1, pageSize: 20, totalCount: 0},
       tableConfig: {
         async fetchData(query: any) {
           const limit = query.pageSize

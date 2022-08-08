@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "dev-toolbox",
-    "version": "0.0.2"
+    "version": "0.0.3"
   },
   "tauri": {
     "allowlist": {
@@ -17,6 +17,7 @@
         "scope": ["$APP", "$APP/*"]
       }
     },
+    "macOSPrivateApi": true,
     "systemTray": {
       "iconPath": "icons/icon.png",
       "iconAsTemplate": true

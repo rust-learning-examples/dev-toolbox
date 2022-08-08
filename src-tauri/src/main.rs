@@ -5,7 +5,7 @@
 use tauri::{Manager, UserAttentionType};
 use app::menu;
 use app::tray::{self, SystemTrayEvent};
-use app::{code_snippet, http};
+use app::{code_snippet, http, clipboard};
 
 #[tauri::command]
 fn code_snippet_handler(input_text: String, replace_content: String) -> Result<(), &'static str> {
@@ -27,6 +27,23 @@ async fn start_http_server_handler(port: u16) -> Result<(), &'static str> {
       Err(e)
     }
   }
+}
+
+#[tauri::command]
+fn write_text_to_clipboard(text: String) -> Result<(), &'static str> {
+    let mut clipboard = clipboard::Clipboard::new();
+    if let Ok(_) = clipboard.set_text(&text) {
+        return Ok(())
+    }
+    Err("")
+}
+#[tauri::command]
+fn write_image_to_clipboard(image: clipboard::ImageData) -> Result<(), &'static str> {
+    let mut clipboard = clipboard::Clipboard::new();
+    if let Ok(_) = clipboard.set_image(image) {
+        return Ok(())
+    }
+    Err("")
 }
 
 fn main() {
@@ -74,7 +91,7 @@ fn main() {
     .setup(|app| {
       #[cfg(target_os = "macos")]
       app.set_activation_policy(tauri::ActivationPolicy::Accessory);
-
+      // code_snippet
       let main_window = app.get_window("main").unwrap();
       let window_clone = main_window.clone();
       let _listen = std::thread::spawn(move || {
@@ -82,10 +99,33 @@ fn main() {
           window_clone.emit("CODE_SNIPPET_INPUT_TEXT", input_text).unwrap();
         });
       });
+      // clipboard
+      let main_window = app.get_window("main").unwrap();
+      let window_clone = main_window.clone();
+      std::thread::spawn(move || {
+        let mut clipboard = clipboard::Clipboard::new();
+        clipboard.listen();
+        if let Some(rx) = clipboard.rx.take() {
+            for _exists_msg in rx {
+                if let Ok(text) = clipboard.get_text() {
+                    // println!("text: {:?}", text);
+                    window_clone.emit("CLIPBOARD_VALUE", clipboard::ContentValue::Text(text)).unwrap();
+                } else if let Ok(image) = clipboard.get_image() {
+                    // println!("image");
+                    window_clone.emit("CLIPBOARD_VALUE", clipboard::ContentValue::Image(image)).unwrap();
+                }
+            }
+        }
+      });
 
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![code_snippet_handler, start_http_server_handler])
+    .invoke_handler(tauri::generate_handler![
+      code_snippet_handler,
+      start_http_server_handler,
+      write_text_to_clipboard,
+      write_image_to_clipboard,
+    ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

@@ -21,27 +21,7 @@ function initVueApp() {
   }
 }
 
-import { appWindow } from '@tauri-apps/api/window'
-import * as notification from '@tauri-apps/api/notification'
-import { useDatabaseAsync } from '@/utils/hooks/useDatabase'
-async function initTauri() {
-  // https://tauri.studio/docs/api/js/modules/event#eventname
-  appWindow.listen('tauri://close-requested', () => {
-    appWindow.hide();
-  })
-
-  if (!await notification.isPermissionGranted()) {
-    notification.requestPermission().then((response) => {
-      if (response === "granted") {
-        console.log("OK")
-      } else {
-        console.log("Permission is " + response);
-      }
-    })
-  }
-
-  await useDatabaseAsync()
-}
-initTauri().then(() => {
+import { initServices } from './services/index'
+initServices().then(() => {
   initVueApp()
 })
