@@ -2,7 +2,7 @@
   "name": "dev-toolbox",
   "private": true,
   "main": "index.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -11,7 +11,6 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.0.6",
     "@tauri-apps/api": "^1.0.2",
     "@types/nprogress": "^0.2.0",
     "ace-builds": "^1.8.1",

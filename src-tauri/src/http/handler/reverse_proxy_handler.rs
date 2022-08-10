@@ -12,6 +12,7 @@ pub async fn handle(Path(target_url): Path<String>, Extension(client): Extension
   if let Some(raw_query) = req.uri().path_and_query() {
     if let Some(target_url_with_query) = raw_query.to_string().strip_prefix("/reverse_proxy/") {
       if target_url_with_query.len() > 0 {
+        let target_url_with_query = super::final_target_url_with_query(target_url_with_query);
         let target_uri: Uri = target_url_with_query.parse().unwrap();
         *req.uri_mut() = target_uri.clone();
         // 自定义追加header: HOST, 解决目标接口跨域限制

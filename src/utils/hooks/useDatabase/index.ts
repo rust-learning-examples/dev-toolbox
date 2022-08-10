@@ -159,6 +159,16 @@ async function initGlobalManager() {
     updated_at DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
     unique(language_id, code));`
   )
+  await db.execute(`CREATE TABLE IF NOT EXISTS http_proxy_rules (
+    id integer primary key AUTOINCREMENT,
+    title varchar(255) NOT NULL,
+    address_rule varchar(255) NOT NULL,
+    target_address varchar(255) NOT NULL,
+    remark text,
+    enabled boolean DEFAULT FALSE,
+    created_at DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
+    updated_at DATETIME NOT NULL DEFAULT (datetime('now','localtime')));`
+  )
   // type text: 0, image: 1
   await db.execute(`CREATE TABLE IF NOT EXISTS clipboard_histories (
     id integer primary key AUTOINCREMENT,

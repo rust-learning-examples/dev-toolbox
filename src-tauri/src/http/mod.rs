@@ -1,14 +1,14 @@
 pub mod handler;
-// pub mod config;
+pub mod config;
 use std::net::SocketAddr;
 use axum::{routing, Router};
 
-// use once_cell::sync::Lazy;
-// use std::sync::{Mutex, Arc};
+use once_cell::sync::Lazy;
+use std::sync::{Mutex, Arc};
 
-// pub static CONFIG: Lazy<Arc<Mutex<config::Config>>> = Lazy::new(|| {
-//   Arc::new(Mutex::new(config::Config::default()))
-// });
+pub static CONFIG: Lazy<Arc<Mutex<config::Config>>> = Lazy::new(|| {
+  Arc::new(Mutex::new(config::Config::default()))
+});
 
 pub async fn listen(port: u16) -> Result<(), &'static str> {
 

@@ -12,13 +12,20 @@ fn code_snippet_handler(input_text: String, replace_content: String) -> Result<(
   code_snippet::handle_user_input(input_text, replace_content)
 }
 
+
+#[tauri::command]
+fn update_http_config_rules_handler(rules: Vec<http::config::ConfigRule>) -> Result<(), &'static str> {
+  let mut config = http::CONFIG.lock().unwrap();
+    (*config).rules = rules;
+    Ok(())
+}
 #[tauri::command]
 async fn start_http_server_handler(port: u16) -> Result<(), &'static str> {
   println!("Starting http server..{}.", port);
-  // {
-  //   let mut config = http::CONFIG.lock().unwrap();
-  //   (*config).port = port;
-  // }
+  {
+    let mut config = http::CONFIG.lock().unwrap();
+    (*config).port = port;
+  }
   match http::listen(port).await {
     Ok(()) => {
       Ok(())
@@ -122,6 +129,7 @@ fn main() {
     })
     .invoke_handler(tauri::generate_handler![
       code_snippet_handler,
+      update_http_config_rules_handler,
       start_http_server_handler,
       write_text_to_clipboard,
       write_image_to_clipboard,
