@@ -2,7 +2,7 @@
   "name": "dev-toolbox",
   "private": true,
   "main": "index.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -16,7 +16,8 @@
     "ace-builds": "^1.8.1",
     "axios": "^0.27.2",
     "element-plus": "^2.2.8",
-    "hls-player.js": "^0.0.2",
+    "hls-player.js": "^0.0.3",
+    "iconv-lite": "^0.6.3",
     "js-md5": "^0.7.3",
     "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
@@ -28,7 +29,7 @@
   },
   "devDependencies": {
     "@iconify-json/ep": "^1.1.6",
-    "@tauri-apps/cli": "^1.0.4",
+    "@tauri-apps/cli": "^1.0.5",
     "@types/js-md5": "^0.4.3",
     "@types/node": "^18.0.2",
     "@vitejs/plugin-legacy": "^1.8.2",

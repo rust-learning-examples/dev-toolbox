@@ -5,7 +5,6 @@ import * as tauriEvent from '@tauri-apps/api/event'
 import { tauri, path, fs, clipboard } from "@tauri-apps/api"
 import SQLite from 'tauri-plugin-sqlite-api'
 import { Language } from './Language'
-import { CodeSnippet } from './CodeSnippet'
 import jsMd5 from 'js-md5'
 
 class DatabaseManager {
@@ -183,6 +182,20 @@ async function initGlobalManager() {
     created_at DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
     updated_at DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
     unique(type, md5));`
+  )
+  // 股票
+  await db.execute(`CREATE TABLE IF NOT EXISTS stocks (
+    id integer primary key AUTOINCREMENT,
+    code varchar(255) NOT NULL,
+    name varchar(255) NOT NULL,
+    price decimal(10,5),
+    price_at DATETIME NOT NULL,
+    notice_lower_price decimal(10,2),
+    notice_higher_price decimal(10,2),
+    remark text,
+    enabled boolean DEFAULT FALSE,
+    created_at DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
+    updated_at DATETIME NOT NULL DEFAULT (datetime('now','localtime')));`
   )
 
   const manager = new DatabaseManager(db)

@@ -12,6 +12,10 @@ const routes = useRoutes([
       { path: '/codeSpippets', name: 'codeSpippets', meta: { title: '代码段' }, component: () => import('@/views/codeSpippets/index.vue') },
       { path: '/httpProxy', name: 'httpProxy', meta: { title: 'http代理' }, component: () => import('@/views/httpProxy/index.vue') },
       { path: '/hlsPlayer', name: 'hlsPlayer', meta: { title: 'hls播放器' }, component: () => import('@/views/hlsPlayer/index.vue') },
+      { path: '/others', redirect: {name: 'others/stocks'}, name: 'others', meta: { title: '其他' }, component: () => import('@/views/others/index.vue'), children: [
+          { path: '/others/stocks', name: 'others/stocks', meta: { title: '股票'} , component: () => import('@/views/others/stocks/index.vue') },
+        ]
+      }
     ]
   },
   { path: '/clipboardHistories', name: 'clipboardHistories', meta: { title: '剪切板历史' }, component: () => import('@/views/clipboardHistories/index.vue') },

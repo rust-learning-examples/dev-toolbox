@@ -25,7 +25,7 @@
         </div>
       </template>
       <template #default="{data, pagination, fetchLoading, fetchData}">
-        <CardList ref="cardListRef" :records="data" :pagination="pagination" :fetchLoading="fetchLoading" @copy="onCopy" @delete="onDelete" @fetchPage="pageNo => fetchData({pageNo})"></CardList>
+        <CardList ref="cardListRef" :records="data" :pagination="pagination" :fetchLoading="fetchLoading" @copy="onCopy" @delete="onDelete" @fetchPage="(pageNo: any) => fetchData({pageNo})"></CardList>
         <!-- <el-table :data="data" default-expand-all>
           <el-table-column label="ID" prop="id" />
           <el-table-column label="类型" prop="type" />

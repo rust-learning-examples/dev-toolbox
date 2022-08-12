@@ -3,6 +3,7 @@ import { appWindow, WebviewWindow, LogicalPosition, getCurrent, currentMonitor, 
 import * as notification from '@tauri-apps/api/notification'
 import * as globalShortcut from '@tauri-apps/api/globalShortcut'
 import { useDatabaseAsync } from '@/utils/hooks/useDatabase'
+import { StockService } from './StockService'
 async function initServices() {
   // init db
   const database = await useDatabaseAsync()
@@ -10,6 +11,9 @@ async function initServices() {
   if (currentWindow.label !== 'main') {
     return
   }
+  const stockService = new StockService(database.db)
+  stockService.checkNoticeInterval()
+
   const monitor = await primaryMonitor()
   await database.fetchAllLanguages()
   await database.listenCodeSnippetEvent()
@@ -20,11 +24,11 @@ async function initServices() {
   })
 
   if (!await notification.isPermissionGranted()) {
-    notification.requestPermission().then((response) => {
-      if (response === "granted") {
+    notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
         console.log("OK")
       } else {
-        console.log("Permission is " + response);
+        console.log("Permission is " + permission);
       }
     })
   }

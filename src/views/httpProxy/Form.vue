@@ -26,13 +26,9 @@
 <script lang='tsx'>
 import { reactive, toRefs, defineComponent, computed } from 'vue'
 import { ElNotification } from 'element-plus'
-import CodeEditor from '@/components/shared/CodeEditor.vue'
 import { useDatabase } from '@/utils/hooks/useDatabase'
 
 export default defineComponent({
-  components: {
-    CodeEditor,
-  },
   props: {
     record: [Object],
   },
