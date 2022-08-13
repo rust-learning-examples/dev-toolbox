@@ -4,7 +4,7 @@
       <el-card shadow="hover" :class="{active: activeRecord === record, text: record.type === 0, image: record.type === 1}" @click="activeRecord = record" @dblclick="$emit('copy', record)" :body-style="{ padding: '0px', width: '250px', height: '190px', overflow: 'hidden' }">
         <template #header>
           <div class="card-header">
-            <span class="title">{{ record.type === 0 ? '文本' : `图片 ${record.image_width}x${record.image_height}`}}</span>
+            <span class="title">{{ record.type === 0 ? `文本 (${record.content_length})` : `图片 (${record.image_width}x${record.image_height})`}}</span>
             <el-button type="danger" link @click="$emit('delete', record)">删除</el-button>
           </div>
         </template>

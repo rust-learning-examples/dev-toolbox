@@ -66,8 +66,8 @@ class DatabaseManager {
           const sql = `UPDATE clipboard_histories set updated_at = datetime('now', 'localtime') where id = ${histories[0].id}`
           await this.db.execute(sql)
         } else {
-          let sql = `INSERT INTO clipboard_histories(type, md5, short_content, content) values($1, $2, $3, $4)`
-          await this.db.execute(sql, [type, md5, short_content, content])
+          let sql = `INSERT INTO clipboard_histories(type, md5, short_content, content, content_length) values($1, $2, $3, $4, $5)`
+          await this.db.execute(sql, [type, md5, short_content, content, content.length])
         }
       } else { // type === 1
         const dataBuffer = new Uint8Array(payload.Image.bytes)
@@ -175,6 +175,7 @@ async function initGlobalManager() {
     md5 varchar(255) NOT NULL,
     short_content varchar(255),
     content text,
+    content_length integer,
     short_image text,
     image text,
     image_width integer,

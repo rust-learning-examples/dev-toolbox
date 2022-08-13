@@ -63,7 +63,7 @@
 import { WebviewWindow, currentMonitor, LogicalPosition, LogicalSize } from '@tauri-apps/api/window'
 import { invoke } from '@tauri-apps/api/tauri'
 import * as tauriEvent from '@tauri-apps/api/event'
-import * as notification from '@tauri-apps/api/notification'
+// import * as notification from '@tauri-apps/api/notification'
 import { reactive, toRefs, defineComponent, defineAsyncComponent, createVNode, computed } from 'vue'
 import { ElMessageBox, ElNotification } from 'element-plus'
 import { useDatabase } from '@/utils/hooks/useDatabase'
@@ -111,7 +111,7 @@ export default defineComponent({
           if (whereConditions.length) {
             whereSegment = ` WHERE ${whereConditions.join(" AND ")}`
           }
-          const items = await database?.db.select<Array<any>>(`select id, type, short_content, image_width, image_height, updated_at from clipboard_histories${whereSegment} order by updated_at desc limit ${limit} offset ${offset};`) as any[]
+          const items = await database?.db.select<Array<any>>(`select id, type, short_content, content_length, image_width, image_height, updated_at from clipboard_histories${whereSegment} order by updated_at desc limit ${limit} offset ${offset};`) as any[]
           const counts = await database?.db.select<Array<{count: number}>>(`select COUNT(*) as count from clipboard_histories${whereSegment};`)
           if (query.pageNo === 1) {
             state.tableRecords = items
@@ -144,7 +144,7 @@ export default defineComponent({
               })
             }
         }
-        notification.sendNotification({title: '已拷贝'});
+        // notification.sendNotification({title: '已拷贝'});
         (state.tableRef as any)?.refreshData()
         hideWindow()
       },
