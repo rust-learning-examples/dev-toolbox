@@ -1,7 +1,6 @@
 <template>
   <fragment-form v-bind="formConfig">
     <template #default="{setFormRef, formRef, model, submitLoading, onSubmit, onCancel}">
-      {{model}}
       <el-form :ref="setFormRef" :model="model" label-width="150px">
         <el-form-item label="代码" prop="code" :rules="[{required: true, message: '必填', trigger: ['change', 'blur']}]">
           <el-input v-model="model.code" placeholder="代码" :disabled="!!record" @blur="queryCode(model.code)"></el-input>
