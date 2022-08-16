@@ -4,6 +4,8 @@ import NProgress from 'nprogress'
 
 export const useRoute = (route: RouteRecordRaw): any => {
   const { component, ...finalRoute } = route as any
+  // name
+  finalRoute.name = finalRoute.name || finalRoute.path.replace(/^\//, '')
   // meta
   finalRoute.meta = {
     ...(finalRoute as any).meta,

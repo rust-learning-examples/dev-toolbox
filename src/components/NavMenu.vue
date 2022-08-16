@@ -36,7 +36,6 @@ export default defineComponent({
           router.getRoute('home'),
           router.getRoute('codeSpippets'),
           router.getRoute('httpProxy'),
-          router.getRoute('hlsPlayer'),
           router.getRoute('others'),
         ]
       }),
