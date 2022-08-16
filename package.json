@@ -2,7 +2,7 @@
   "name": "dev-toolbox",
   "private": true,
   "main": "index.js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",

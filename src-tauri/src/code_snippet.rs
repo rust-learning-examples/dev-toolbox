@@ -32,6 +32,43 @@ enum RegexWord {
 
 pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
   let device_state = DeviceState::new();
+  let get_record_word = |key: String| {
+    let key = regex::Regex::new(r"^Key").unwrap().replace(&key, "").to_string();
+    if regex::Regex::new(r"^[A-Z]{1}$").unwrap().is_match(&key) {
+      return RegexWord::Text(key.to_lowercase())
+    } else if regex::Regex::new(r"^Space$").unwrap().is_match(&key) {
+      return RegexWord::Text(" ".to_string())
+    } else if regex::Regex::new(r"^[0-9\-=]{1}$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText(key.to_lowercase())
+    } else if regex::Regex::new(r"^Minus$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("-".to_string())
+    } else if regex::Regex::new(r"^Equal$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("=".to_string())
+    } else if regex::Regex::new(r"^LeftBracket$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("[".to_string())
+    } else if regex::Regex::new(r"^RightBracket$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("]".to_string())
+    } else if regex::Regex::new(r"^BackSlash$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("\\".to_string())
+    } else if regex::Regex::new(r"^Slash$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("/".to_string())
+    } else if regex::Regex::new(r"^Semicolon$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText(";".to_string())
+    } else if regex::Regex::new(r"^Apostrophe$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("'".to_string())
+    } else if regex::Regex::new(r"^Comma$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText(",".to_string())
+    } else if regex::Regex::new(r"^Dot$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText(".".to_string())
+    }  else if regex::Regex::new(r"^Grave$").unwrap().is_match(&key) {
+      return RegexWord::ShiftText("·".to_string())
+    } else if regex::Regex::new(r"^Tab$").unwrap().is_match(&key) {
+      return RegexWord::Tab
+    } else if regex::Regex::new(r"^Backspace$").unwrap().is_match(&key) {
+      return RegexWord::Delete
+    }
+    RegexWord::Ignore
+  };
   let _guard = device_state.on_key_down(move |key: &Keycode| {
     let key = key.to_string();
     // println!("in-- key: {}", key);
@@ -39,45 +76,7 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
       let mut global_keyboard_events_handler = KEYBOARD_EVENTS_HANDLER.lock().unwrap();
       global_keyboard_events_handler.is_shift = true;
     } else {
-      let get_record_word = || {
-        let key = regex::Regex::new(r"^Key").unwrap().replace(&key, "").to_string();
-        if regex::Regex::new(r"^[A-Z]{1}$").unwrap().is_match(&key) {
-          return RegexWord::Text(key.to_lowercase())
-        } else if regex::Regex::new(r"^Space$").unwrap().is_match(&key) {
-          return RegexWord::Text(" ".to_string())
-        } else if regex::Regex::new(r"^[0-9\-=]{1}$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText(key.to_lowercase())
-        } else if regex::Regex::new(r"^Minus$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("-".to_string())
-        } else if regex::Regex::new(r"^Equal$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("=".to_string())
-        } else if regex::Regex::new(r"^LeftBracket$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("[".to_string())
-        } else if regex::Regex::new(r"^RightBracket$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("]".to_string())
-        } else if regex::Regex::new(r"^BackSlash$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("\\".to_string())
-        } else if regex::Regex::new(r"^Slash$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("/".to_string())
-        } else if regex::Regex::new(r"^Semicolon$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText(";".to_string())
-        } else if regex::Regex::new(r"^Apostrophe$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("'".to_string())
-        } else if regex::Regex::new(r"^Comma$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText(",".to_string())
-        } else if regex::Regex::new(r"^Dot$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText(".".to_string())
-        }  else if regex::Regex::new(r"^Grave$").unwrap().is_match(&key) {
-          return RegexWord::ShiftText("·".to_string())
-        } else if regex::Regex::new(r"^Tab$").unwrap().is_match(&key) {
-          return RegexWord::Tab
-        } else if regex::Regex::new(r"^Backspace$").unwrap().is_match(&key) {
-          return RegexWord::Delete
-        }
-        RegexWord::Ignore
-      };
-
-      let record_word = get_record_word();
+      let record_word = get_record_word(key);
 
       match &record_word {
         RegexWord::ShiftText(key) => {
@@ -158,7 +157,8 @@ pub fn watch<E>(executor: E) where E: Fn(String) -> () + Send + Sync + 'static {
       global_keyboard_events_handler.is_shift = false;
     }
   });
-  loop {}
+  // loop {}
+  std::thread::park();
 }
 
 pub fn handle_user_input(input_text: String, _replace_content: String) -> Result<(), &'static str> {
