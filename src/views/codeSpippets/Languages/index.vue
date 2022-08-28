@@ -41,9 +41,9 @@
       <template #pagination="{pagination}">
         <el-pagination class="float-right mt-2" small
           :current-page="pagination.pageNo"
-          @update:current-page="(pageNo) => pagination.onChange(pageNo, pagination.pageSize)"
+          @update:current-page="(pageNo: number) => pagination.onChange(pageNo, pagination.pageSize)"
           :page-size="pagination.pageSize"
-          @update:page-size="(pageSize) => pagination.onChange(pagination.pageNo, pageSize)"
+          @update:page-size="(pageSize: number) => pagination.onChange(pagination.pageNo, pageSize)"
           :total="pagination.totalCount"
           :page-sizes="[10, 20, 30, 50, 100]"
           layout="total,sizes,prev,pager,next,jumper"

@@ -3,6 +3,9 @@
     <el-col :md="24" :lg="12" :xl="8">
       <JuejinTopCard></JuejinTopCard>
     </el-col>
+    <el-col :md="24" :lg="12" :xl="8">
+      <SegmentdefaultTopCard></SegmentdefaultTopCard>
+    </el-col>
   </el-row>
   <el-divider></el-divider>
   <el-row :gutter="15">
@@ -53,10 +56,12 @@
 <script lang='tsx'>
 import { reactive, toRefs, defineComponent } from 'vue'
 import JuejinTopCard from './JuejinTopCard.vue'
+import SegmentdefaultTopCard from './SegmentfaultTopCard.vue'
 
 export default defineComponent({
   components: {
-    JuejinTopCard
+    JuejinTopCard,
+    SegmentdefaultTopCard,
   },
   setup (props, ctx) {
     const state = reactive({})

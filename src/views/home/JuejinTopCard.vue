@@ -1,5 +1,5 @@
 <template>
-  <el-card header="掘金推荐 前端">
+  <el-card header="掘金推荐 前端" :body-style="{ padding: '15px' }">
     <template v-for="post in posts" :key="post.article_id">
       <div><el-link :href="`https://juejin.cn/post/${post.article_id}`" target="_blank" :title="post.article_info?.title">{{ post.article_info?.title }}</el-link></div>
     </template>
@@ -32,7 +32,7 @@ export default defineComponent({
             sort_type: 200,
             cate_id: '6809637767543259144',
             cursor: '0',
-            limit: 10
+            limit: 12
           })
         })
         if (response.data?.err_no === 0 && response.data?.data?.length) {

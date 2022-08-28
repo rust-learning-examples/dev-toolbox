@@ -82,7 +82,7 @@ export default defineComponent({
         const query = await state.getRouteQuery()
         await state.fetchData({...(ctx.attrs.query as object), ...query, ...extraQuery})
       },
-      async fetchData(query: {[index: string]: any} = {}, mergePreQuery = true) {
+      async fetchData(query: any = {}, mergePreQuery = true) {
         const queryData = {
           ...(props.enablePagination ? {
             [(props.enablePagination as any)?.pageNo || 'pageNo']: query[(props.enablePagination as any)?.pageNo || 'pageNo'] || state.pagination[(props.enablePagination as any)?.pageNo || 'pageNo'],
