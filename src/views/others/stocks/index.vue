@@ -1,6 +1,6 @@
 <template>
   <div class="page text-xs">
-    <fragment-table ref="tableRef" v-model:pagination="pagination" v-bind="tableConfig">
+    <fragment-table ref="tableRef" v-model:data="data" v-model:pagination="pagination" v-bind="tableConfig">
       <template #searchBar="{query, fetchLoading, fetchData}">
         <div class="flex justify-between items-end mx-4">
           <fragment-form>
@@ -91,7 +91,7 @@
 
 <script lang='tsx'>
 import { tauri } from "@tauri-apps/api"
-import { reactive, toRefs, defineComponent, defineAsyncComponent, createVNode } from 'vue'
+import { reactive, toRefs, defineComponent, defineAsyncComponent, createVNode, getCurrentInstance, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessageBox, ElNotification } from 'element-plus'
 import { useLoading } from '@/utils/hooks/useLoading'
 import { useDialog } from '@/utils/hooks/useDialog'
@@ -101,8 +101,10 @@ export default defineComponent({
   setup (_props, _ctx) {
     const dialog = useDialog()
     const database = useDatabase()
+    const appContext = getCurrentInstance()!.appContext;
     const state = reactive({
       tableRef: null,
+      data: [],
       pagination: {pageNo: 1, pageSize: 100, totalCount: 0},
       tableConfig: {
         async fetchData(query: any) {
@@ -174,6 +176,22 @@ export default defineComponent({
         (state.tableRef as any)?.refreshData()
       }
     })
+
+    const onUpdateStoke = (stock: any) => {
+      const findStock = state.data.find((item: any) => item?.id === stock.id)
+      if (findStock) {
+        Object.assign(findStock, stock)
+      }
+    }
+
+    onMounted(() => {
+      appContext.config.globalProperties.$emitter.on('updateStock', onUpdateStoke)
+    })
+
+    onBeforeUnmount(() => {
+      appContext.config.globalProperties.$emitter.off('updateStock')
+    })
+
     return { ...toRefs(state) }
   },
 })

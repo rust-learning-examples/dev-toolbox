@@ -84,26 +84,30 @@ export class StockService {
   constructor(db: SQLite) {
     this.db = db;
   }
-  // default 0.5 hour
-  async checkNoticeInterval(intervalTime = 0.5 * 60 * 60 * 1000) {
-    const stocks = await this.db.select<Array<any>>(`select * from stocks where enabled = 1 order by updated_at desc;`) as any[]
-    for (const stock of stocks) {
-      const onlineDetail = await StockService.getDetail(stock.code).catch(e => console.error(e))
-      if (!onlineDetail) {
-        continue;
+  // default 3 minutes
+  async checkNoticeInterval(emitter: any, intervalTime = 3 * 60 * 1000) {
+    try {
+      const stocks = await this.db.select<Array<any>>(`select * from stocks where enabled = 1 order by updated_at desc;`) as any[]
+      for (const stock of stocks) {
+        const onlineDetail = await StockService.getDetail(stock.code).catch(e => console.error(e))
+        if (!onlineDetail) {
+          continue;
+        }
+        stock.price = Number(onlineDetail.price)
+        emitter.emit('updateStock', stock)
+        const sql = `UPDATE stocks set price = $1, price_at = datetime('now', 'localtime') where id = ${stock.id}`
+        await this.db.execute(sql, [stock.price])
+        if (stock.price <= stock.notice_lower_price) {
+          notification.sendNotification({title: stock.name, body: `当前价格${stock.price}, 低于通知价格${stock.notice_lower_price}`})
+        }
+        if (stock.price > stock.notice_higher_price) {
+          notification.sendNotification({title: stock.name, body: `当前价格${stock.price}, 高于通知价格${stock.notice_higher_price}`})
+        }
       }
-      stock.price = Number(onlineDetail.price)
-      const sql = `UPDATE stocks set price = $1, price_at = datetime('now', 'localtime') where id = ${stock.id}`
-      await this.db.execute(sql, [stock.price])
-      if (stock.price <= stock.notice_lower_price) {
-        notification.sendNotification({title: stock.name, body: `当前价格${stock.price}, 低于通知价格${stock.notice_lower_price}`})
-      }
-      if (stock.price > stock.notice_higher_price) {
-        notification.sendNotification({title: stock.name, body: `当前价格${stock.price}, 高于通知价格${stock.notice_higher_price}`})
-      }
+    } finally {
+      setTimeout(() => {
+        this.checkNoticeInterval(emitter, intervalTime)
+      }, intervalTime)
     }
-    setTimeout(() => {
-      this.checkNoticeInterval(intervalTime)
-    }, intervalTime)
   }
 }

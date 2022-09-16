@@ -4,7 +4,7 @@ import * as notification from '@tauri-apps/api/notification'
 import * as globalShortcut from '@tauri-apps/api/globalShortcut'
 import { useDatabaseAsync } from '@/utils/hooks/useDatabase'
 import { StockService } from './StockService'
-async function initServices() {
+async function initServices(emitter: any) {
   // init db
   const database = await useDatabaseAsync()
   const currentWindow = getCurrent()
@@ -12,7 +12,7 @@ async function initServices() {
     return
   }
   const stockService = new StockService(database.db)
-  stockService.checkNoticeInterval()
+  stockService.checkNoticeInterval(emitter)
 
   const monitor = await primaryMonitor()
   await database.fetchAllLanguages()
