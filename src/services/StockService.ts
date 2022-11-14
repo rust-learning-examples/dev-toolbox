@@ -90,7 +90,7 @@ export class StockService {
       const stocks = await this.db.select<Array<any>>(`select * from stocks where enabled = 1 order by updated_at desc;`) as any[]
       for (const stock of stocks) {
         const onlineDetail = await StockService.getDetail(stock.code).catch(e => console.error(e))
-        if (!onlineDetail) {
+        if (!onlineDetail || `${onlineDetail.price}` !== '0') {
           continue;
         }
         stock.price = Number(onlineDetail.price)
