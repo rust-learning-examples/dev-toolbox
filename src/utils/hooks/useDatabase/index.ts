@@ -207,9 +207,9 @@ let globalManager: DatabaseManager | null = null
 export async function useDatabaseAsync() {
   if (!globalManager) {
     globalManager = await initGlobalManager()
-    // clipboard history最多保留9999条
+    // clipboard history最多保留999条
     await globalManager.db.execute(`DELETE FROM clipboard_histories where updated_at < (
-      SELECT min(updated_at) from (SELECT updated_at FROM clipboard_histories ORDER BY updated_at DESC limit 9999)
+      SELECT min(updated_at) from (SELECT updated_at FROM clipboard_histories ORDER BY updated_at DESC limit 999)
     );`)
   }
   return globalManager
